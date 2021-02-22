@@ -1,0 +1,119 @@
+\documentclass[a4paper,12pt]{article}
+\usepackage[utf8]{inputenc}
+\usepackage{fancyhdr}
+\usepackage{enumitem}
+\usepackage{hyperref}
+\usepackage{natbib}
+\usepackage[french]{babel}
+
+\setlength{\parindent}{1cm}
+\usepackage{mwe,lipsum}
+\usepackage[section]{placeins}
+\usepackage{dblfloatfix}
+\usepackage{float}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{graphicx}
+\usepackage{fullpage}
+\usepackage{eso-pic}
+\usepackage{layout}
+\usepackage{indentfirst}
+\usepackage{siunitx}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{tabularx}
+\usepackage{multicol}
+\usepackage{multirow}
+
+\usepackage{caption}
+\usepackage{subcaption}
+
+\setlength{\headsep}{0.3cm}
+\renewcommand*\contentsname{Table des matières}
+
+\begin{document}
+	\pagestyle{fancy}
+	\headheight=15pt
+	\fancyhf{}
+	\renewcommand{\footrulewidth}{0.4pt}
+	
+	\lhead{DNS over HTTPS}
+	\rhead{IP}
+	% \lfoot{Equipe 9 - 2020}
+	\rfoot{\thepage}
+	
+	%   TITLE PAGE
+	\begin{titlepage}
+		
+		\begin{center}
+			\rule{\textwidth}{1pt} % Thick horizontal rule
+			
+			\vspace{2pt}\vspace{-\baselineskip} % White space between rules
+			
+			\rule{\textwidth}{0.4pt} % Thin horizontal rule
+			
+			\vspace{0.1\textheight} % White space between the top rules and title
+			
+			%------------------------------------------------
+			%	Title
+			%------------------------------------------------
+			
+			\textcolor{black} {
+				{\Huge DNS over HTTPS}\\[0.5\baselineskip]
+				{\Large -}\\[0.5\baselineskip]
+			}
+			
+			\vspace{0.01\textheight} % White space between the title and short horizontal rule
+			
+			\rule{0.3\textwidth}{0.4pt} % Short horizontal rule under the title
+			
+			\vspace{0.1\textheight}
+			
+			%------------------------------------------------
+			%	Author
+			%------------------------------------------------
+			
+			{\Large \textsc{Arnaud Lombardi - Théo Grosperrin}} % Author name
+			
+			\vspace{0.025\textheight}
+			
+			{\large \textsc{\today}}
+			
+			\vfill % White space between the author name and publisher
+			
+		\end{center}
+		
+		%------------------------------------------------
+		%	Publisher
+		%------------------------------------------------
+		
+		\centering
+		{\includegraphics[scale=0.5]{Images/INSA_LOGO.png}}\\[1.7\baselineskip]
+		{\includegraphics[scale=0.18]{Images/TC.jpg}}
+		
+		\vspace{0.1\textheight} % White space under the publisher text
+		
+		%------------------------------------------------
+		%	Bottom rules
+		%------------------------------------------------
+		
+		\centering
+		
+		\rule{\textwidth}{0.4pt} % Thin horizontal rule
+		
+		\vspace{2pt}\vspace{-\baselineskip} % White space between rules
+		
+		\rule{\textwidth}{1pt} % Thick horizontal rule
+		
+	\end{titlepage}
+	
+	% Front matter %
+	\setcounter{page}{1}
+	\pagenumbering{arabic}
+	
+	%------------------------------------------------
+	%	Table of contents
+	%------------------------------------------------
+	\hspace{2cm}
+	\tableofcontents
+\end{document}
