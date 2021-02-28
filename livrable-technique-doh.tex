@@ -60,7 +60,6 @@
 			
 			\textcolor{black} {
 				{\Huge DNS over HTTPS}\\[0.5\baselineskip]
-				{\Large -}\\[0.5\baselineskip]
 			}
 			
 			\vspace{0.01\textheight} % White space between the title and short horizontal rule
@@ -116,4 +115,31 @@
 	%------------------------------------------------
 	\hspace{2cm}
 	\tableofcontents
+	
+	\newpage
+	
+	\section{En quelques mots, qu'est que le DoH ?}
+	Il s'agit de la résolution des requêtes DNS en utilisant le protocole HTTPS, au lieu de simples requêtes en clair sur le port 53 (DNS classique). L'objectif de cette méthode est d'augmenter la sécurité du cote utilisateur : cela permet d'améliorer la vie privée de l'utilisateur (le trafic entre le client et le serveur DNS est chiffré, illisible par les machines se trouvant sur le chemin), et d'éviter les attaques de type "man-in-the-middle".
+	
+	\section{Détails techniques}
+	Le DoH est un standard publié par l'IETF : \href{https://tools.ietf.org/html/rfc8484}{RFC 8484}.
+	
+	\subsection{Le fonctionnement du DoH}
+	
+	\subsection{Les différentes implémentations possibles}
+	
+	\subsubsection{DoH natif au sein du navigateur}
+	
+	\subsubsection{DoH proxy sur le réseau local}
+	
+	\subsubsection{DoH proxy sur système local}
+	
+	\subsection{Support logiciel}
+	
+	\subsubsection{Système d'exploitation}
+	
+	\subsubsection{Navigateurs compatibles}
+	
+	\subsubsection{Serveurs compatibles}
+	
 \end{document}
