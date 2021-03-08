@@ -124,15 +124,31 @@
 	\section{Détails techniques}
 	Le DoH est un standard publié par l'IETF : \href{https://tools.ietf.org/html/rfc8484}{RFC 8484}.
 	
+	\subsection{Le fonctionnement du DNS et ses limites}
+	
 	\subsection{Le fonctionnement du DoH}
 	
-	\subsection{Les différentes implémentations possibles}
+	\section{Les différentes implémentations possibles}
 	
 	\subsubsection{DoH natif au sein du navigateur}
 	
+	
 	\subsubsection{DoH proxy sur le réseau local}
 	
+	Dans ce scénario, les machines du réseau local effectuent des requêtes DNS traditionnelles sur le port 53, vers un serveur DNS installé sur le réseau local. Ce serveur DNS effectue ensuite une requête DNS récursive vers un serveur DNS compatible DoH. Ainsi, la requête est chiffrée lorsqu'elle sort du LAN.
+	
+	\begin{figure}[H]
+		\begin{center}
+			{\includegraphics[scale=0.6]{Images/schema_doh_proxy_lan.png}}
+		\end{center}
+		\caption{Schéma de l'implémentation d'un serveur DoH proxy sur un réseau local.}
+	\end{figure}
+	
+	On constate bien l'inconvénient de ce système : les requêtes entre les clients et le serveur local ne sont pas sécurisées, et on se base sur le fait que l'on fait confiance au serveur proxy.
+	
 	\subsubsection{DoH proxy sur système local}
+	
+	\section{Mise en contexte}
 	
 	\subsection{Support logiciel}
 	
@@ -141,5 +157,11 @@
 	\subsubsection{Navigateurs compatibles}
 	
 	\subsubsection{Serveurs compatibles}
+	
+	\subsection{Critiques}
+	
+	\section{Les problèmes que peuvent poser le DoH}
+	
+	
 	
 \end{document}
