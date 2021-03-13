@@ -125,6 +125,27 @@
 	Le DoH est un standard publié par l'IETF : \href{https://tools.ietf.org/html/rfc8484}{RFC 8484}.
 	
 	\subsection{Le fonctionnement du DNS et ses limites}
+	DNS est un acronyme qui signifie « Domain Name System » et peut se traduire par « système de noms de domaine ».
+	Le DNS est un service permettant de faire le lien entre les noms de domaines et les adresses IP qui leurs sont associées.(ex : google.fr = 216.58.198.195) 
+	Pour cela DNS a besoin de plusieurs serveurs pour répondre au requête DNS des utilisateurs 
+	le serveur DNS récursif répond à une requête DNS et demande l’adresse à d’autres serveurs DNS,  le serveur TLD (top-level domain : domaine de premier niveau) est l’un des serveurs DNS de haut niveau que l’on trouve sur Internet, le serveur de noms faisant autorité constitue le terminus d’une requête DNS et les serveur racine du DNS (Root Name Server) : il s’agit du serveur de noms pour la zone racine. Il répond à des requêtes directes et peut renvoyer une liste de noms de serveurs faisant autorité pour le domaine de haut niveau correspondant.
+	\begin{figure}[H]
+		\begin{center}
+			{\includegraphics[scale=0.6]{Images/routes-traffic.png}}
+		\end{center}
+		\caption{Schéma d'une requête DNS.}
+	\end{figure}
+	Une requête consiste à envoyer sur le port 53 une requête en clair de type adresse « A » pour récupérer l’IP en passant par les diffèrent serveur 
+	
+	Limite :
+	DNS utilise en général UDP et le port 53. La taille maximale des paquets utilisée est de 512 octets. Si une réponse dépasse cette taille, la norme prévoit que la requête doit être renvoyée sur le port TCP 53. Ce cas est cependant rare et évité, et les firewalls bloquent souvent le port TCP 53. Les transferts de zone s'effectuent par TCP sur le même numéro de port. Pour des raisons de sécurité, les serveurs restreignent généralement la possibilité de transférer des zones.
+	
+	Plusieurs faille de DNS sont connu dû au fait que les requête soit envoyer en clair : 
+	Une des failles mises en avant est la possibilité d'intercepter les paquets transmis. Les serveurs DNS communiquent au moyen de paquets uniques et non signés. Ces deux spécificités rendent l'interception très aisée. L'interception peut se concrétiser de différentes manières, notamment via une attaque de type « man in the middle », de l'écoute des données transférées et de l'envoi de réponse falsifiée
+	Les paquets des serveurs DNS étant faiblement sécurisés, authentifiés par un numéro de requête, il est possible de fabriquer de faux paquets. Par exemple, un utilisateur qui souhaite accéder au site http://mabanque.example.com fait une demande au site DNS. Il suffit, à ce moment, qu'un pirate informatique réponde à la requête de l'utilisateur avant le serveur DNS pour que l'utilisateur se retrouve sur un site d'hameçonnage.
+	La trahison par un serveur, ou corruption de données, est, techniquement, identique à une interception des paquets. La seule différence venant du fait que l'utilisateur envoie volontairement sa requête au serveur. Cette situation peut arriver lorsque, par exemple, l'opérateur du serveur DNS souhaite mettre en avant un partenaire commercial.
+	L'empoisonnement du cache DNS ou pollution de cache DNS (en anglais, DNS cache poisoning) est une technique permettant de leurrer les serveurs DNS afin de leur faire croire qu'ils reçoivent une requête valide tandis qu'elle est frauduleuse.
+	Une attaque par déni de service (ou attaque par saturation; en anglais, Denial of Service attack ou DoS attack) est une attaque sur un serveur informatique qui résulte en l'incapacité pour le serveur de répondre aux requêtes de ses clients.
 	
 	\subsection{Le fonctionnement du DoH}
 	
