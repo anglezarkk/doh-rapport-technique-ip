@@ -188,23 +188,26 @@
 		\end{center}
 		\caption{Schéma de l'implémentation d'un serveur proxy DoH sur le système local.}
 	\end{figure}
-	
-	\subsubsection{Tableau récapitulatif}
-	
+
 	\section{Mise en contexte}
 	
 	\subsection{Support logiciel}
 	
 	\subsubsection{Système d'exploitation}
-	
+	DoH est implémenté sur Windows 10 depuis la version 19628 (mai 2020), iOS 14 et macOS 11 depuis fin 2020. Le support est donc très récent (et donc restreint).
 	\subsubsection{Navigateurs compatibles}
-	
+	Les navigateurs les plus populaires sont compatibles DoH :
+	\begin{itemize}
+		\item Mozilla Firefox : suite à un partenariat avec Cloudflare, l'option est disponible des 2018. Depuis le 25 février 2020, Firefox active le DoH par défaut pour tous les utilisateurs des Etats-Unis.
+		\item Google Chrome : disponible depuis la version 83 pour Windows et macOS, la fonctionnalité est accessible depuis les paramètres du navigateur. En septembre 2020, la version Android du navigateur supporte le DoH.
+		\item Microsoft Edge : compatible (le navigateur est un fork de Google Chrome).
+	\end{itemize}
 	\subsubsection{Serveurs compatibles}
-	
+	BIND 9, un serveur DNS open-source et très répandu, a introduit le support du DoH en février 2021, sur la version 9.17.10.
+	Quant à Unbound, il le supporte depuis octobre 2020 (version 1.12.0). Il supportait déjà le DoT (DNS over TLS) depuis décembre 2011.
 	\subsection{Critiques}
-	
-	\section{Les problèmes que peuvent poser le DoH}
-	
-	
+	Le DoH, comme de nombreuses technologies cherchant a améliorer la sécurité, n'a pas manqué d'être le sujet de critiques diverses. En effet, certains pirates ont su tirer profit de ce protocole : en 2019, le ver Godlua, qui a servi à exécuter diverses attaques de type DDoS, a utilisé le DoH afin de masquer la destination de son serveur de contrôle.
+	Mais il a également été critiqué par le gouvernement du Royaume-Uni : le pays a mis en place divers filtres afin de bloquer des sites web proposant du contenu illégalement, ou bien l'accès au sites pornographiques (pour lesquels il faut entrer un numéro de carte bancaire afin de prouver la majorité du visiteur dans ce pays). Mozilla a été accusé de "Internet Villain" par l'ISPA (Internet Service Providers Association) pour avoir sapé les standards en matière de sécurité web du Royaume-Uni. Mozilla a été contraint de désactiver par défaut le DoH sur son navigateur pour les utilisateurs anglo-saxons.\href{https://www.theguardian.com/technology/2019/sep/24/firefox-no-uk-plans-to-make-encrypted-browser-tool-its-default}{Source}
+	\section{Les problèmes que peuvent poser le DoH}	
 	
 \end{document}
