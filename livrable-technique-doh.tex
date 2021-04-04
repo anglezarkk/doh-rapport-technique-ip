@@ -153,19 +153,60 @@
 	
 	\subsubsection{DoH natif au sein du navigateur}
 	
-	C'est la méthode à privilégier, mais aussi la plus complexe à mettre en place : l'application effectue elle-même une requête DoH, elles n'ont donc pas besoin de passer par la fonction DNS du système d'exploitation. Les désavantages de cette implémentation restent multiples : l'application peut ne pas informer l'utilisateur qu'elle effectue ou non la requête de manière sécurisée (par exemple, si elle ne le supporte pas, elle n'en informera probablement pas l'utilisateur). De plus, cela demande une mise à jour de chaque application afin de la rendre compatible DoH de manière native.
-	
 	\begin{figure}[H]
 		\begin{center}
 			{\includegraphics[scale=0.6]{Images/schema_doh_native.png}}
 		\end{center}
 		\caption{Schéma de l'implémentation native de DoH au sein d'une application.}
 	\end{figure}
-	 
+
+	Son principe est le suivant : la routine d'exécution de la requête DNS habituellement exécutée par le système d'exploitation est outrepassée par le navigateur qui implémente sa propre routine : celle qui utilise le DNS over HTTPS. Ainsi, la transition entre DNS classique et DoH est invisible aux yeux du système d'exploitation. 
+	
+	Cela permet d'utiliser ce nouveau protocole sans dépendre de l'implémentation au niveau de l'OS. C'est la méthode qui est utilisée actuellement par Google Chrome et Mozilla Firefox.
+	
+	Afin d'envoyer une requête au serveur DoH, le navigateur initie une session TLS avec le serveur, puis  effectue une requête HTTP de type GET indiquant le nom de domaine a résoudre, ainsi que le type de champ souhaité.
+	
+	Par exemple, imaginons que l'on cherche à trouver l'adresse IPv4 associée à twitter.com, en passant par le serveur DNS over HTTPS de Google.
+	L'application effectue donc une requête GET vers \url{https://8.8.8.8/resolve?name=twitter.com&type=A}.
+	
+	La syntaxe est identique à celle d'une API.
+	
+	\newpage
+	
+	L'échange se déroule ainsi :
+	\begin{figure}[H]
+		\begin{center}
+			{\includegraphics[scale=0.2]{Images/tls-example.png}}
+		\end{center}
+		\caption{Schéma des échanges lors d'une requête DoH.}
+	\end{figure}
+	
+	Le serveur renvoie des données au format JSON contenant l'adresse IPv4 de twitter.com.
+	
+	\begin{figure}[H]
+		\begin{center}
+			{\includegraphics[scale=0.6]{Images/out_json.png}}
+		\end{center}
+		\caption{Réponse du serveur a la requête GET.}
+	\end{figure}
+	
+	
+ 	\begin{figure}[H]
+	 	\begin{center}
+	 		{\includegraphics[scale=0.55]{Images/doh-wireshark.png}}
+	 	\end{center}
+	 	\caption{Capture Wireshark de l'échange DoH.}
+	\end{figure}
+
+	D'un point de vue externe, impossible de voir qu'il s'agit de trafic DNS, tout ce que l'on voit, c'est un handshake TLS entre le serveur et le client, puis des données chiffrées. Étant donné que n'importe quel type de données peuvent se trouver dans un échange chiffré, cela peut poser problème dans un environnement d'entreprise par exemple : l'adresse du serveur DoH cible dépend entièrement de l'application et de ses éventuels paramètres (le paramètre global du système d'exploitation n'est pas pris en compte, l'administrateur système perd donc la main sur ce paramètre). 
+	
+	Le filtrage et certains contrôles s'effectuent sur la base du DNS (exemple : filtrage des adresses non pertinentes pour le travail, ou bien encore filtrage sur une liste contenant des adresses dangereuses, pouvant potentiellement infecter les postes de l'entreprises). 
+	
+	Cette méthode offre donc un moyen facile de contourner les filtrages DNS mis en place par l'administrateur système, ce qui n'est pas l'objectif recherché...
 	
 	\subsubsection{Proxy DoH sur le réseau local}
 	
-	Dans ce scénario, les machines du réseau local effectuent des requêtes DNS traditionnelles sur le port 53, vers un serveur DNS installé sur le réseau local. Ce serveur DNS effectue ensuite une requête DNS récursive vers un serveur DNS compatible DoH. Ainsi, la requête est chiffrée lorsqu'elle sort du LAN.
+	Dans ce scénario, les machines du réseau local effectuent des requêtes DNS traditionnelles sur le port 53, vers un serveur DNS installé sur le réseau local. Ce serveur DNS effectue ensuite une requête DNS récursive vers un resolver DoH. Ainsi, la requête est masquée lorsqu'elle sort du LAN.
 	
 	\begin{figure}[H]
 		\begin{center}
@@ -174,12 +215,15 @@
 		\caption{Schéma de l'implémentation d'un serveur DoH proxy sur un réseau local.}
 	\end{figure}
 	
-	On constate bien l'inconvénient de ce système : les requêtes entre les clients et le serveur local ne sont pas sécurisées, et on se base sur le fait que l'on fait confiance au serveur proxy.
+	On constate bien l'inconvénient de ce système : les requêtes entre les clients et le serveur local ne sont pas sécurisées, et on se base sur le fait que l'on fait confiance au serveur proxy (qui lui même fait confiance aveuglément au resolver DoH)
 	Cependant, il s'agit d'un méthode d'implémentation relativement facile à mettre en place, puisqu'elle n'implique que peu de modifications sur le réseau existant, simplement l'ajout d'un proxy sur le LAN.
+	Cette méthode permet donc de conserver le filtrage DNS mis en place dans le cas d'une entreprise, pour peu que le DoH soit désactivé sur les applications des postes utilisateurs.
 	
 	\subsubsection{Proxy DoH sur système local}
 	
 	Ici, le système est configuré pour envoyer les requêtes DNS à lui-même, puisqu'on installe un serveur proxy sur celui-ci. Ce proxy se charge d'effectuer les requêtes de manière sécurisée (donc DoH) pour chaque requête DNS classique qu'il reçoit.
+	Cette méthode permet de forcer l'utilisation du DoH sur système d'exploitation ne l'implémentant pas et sur des applications ne l'implémentant pas également, sans pour autant devoir faire appel a une machine extérieure (comme dans le cas du proxy DoH sur LAN).
+	Cependant, cette methode est lourde 
 	Cette méthode permet d'utiliser des applications n'implémentant pas le DoH de manière native sans compromettre la sécurité des requêtes sur le LAN. Cependant, elle est lourde puisqu'elle implique d'installer un proxy sur chaque machine.
 	
 	\begin{figure}[H]
