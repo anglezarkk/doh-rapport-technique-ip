@@ -126,28 +126,69 @@
 	
 	\subsection{Le fonctionnement du DNS et ses limites}
 	DNS est un acronyme qui signifie « Domain Name System » et peut se traduire par « système de noms de domaine ».
-	Le DNS est un service permettant de faire le lien entre les noms de domaines et les adresses IP qui leurs sont associées.(ex : google.fr = 216.58.198.195) 
-	Pour cela DNS a besoin de plusieurs serveurs pour répondre au requête DNS des utilisateurs 
-	le serveur DNS récursif répond à une requête DNS et demande l’adresse à d’autres serveurs DNS,  le serveur TLD (top-level domain : domaine de premier niveau) est l’un des serveurs DNS de haut niveau que l’on trouve sur Internet, le serveur de noms faisant autorité constitue le terminus d’une requête DNS et les serveur racine du DNS (Root Name Server) : il s’agit du serveur de noms pour la zone racine. Il répond à des requêtes directes et peut renvoyer une liste de noms de serveurs faisant autorité pour le domaine de haut niveau correspondant.
+	Le DNS est un service permettant de faire le lien entre les noms de domaines et les adresses IP qui leurs sont associées (ex : google.fr = 216.58.198.195).
+	Pour cela DNS a besoin de plusieurs serveurs pour répondre au requête DNS. 
+	Les applications vont passer par un serveur DNS mandataire qui contactera dans un premier temps l'un des 13 serveurs racine aléatoirement en lui demandant les informations sur le nom de domaine (Adresse IP ,SPF ,DKIM ... ). De manière récursif, le serveur mandataire obtient les instructions concernant les adresses des prochains NS (Name Server), jusqu'à obtenir la réponse d'un serveur faisant autorité. Il existe un cas ou l'application va elle même récupère les informations de manière récursive.
+	
 	\begin{figure}[H]
 		\begin{center}
-			{\includegraphics[scale=0.6]{Images/routes-traffic.png}}
+			{\includegraphics[scale=0.5]{Images/routes-traffic.png}}
 		\end{center}
-		\caption{Schéma d'une requête DNS.}
+		\caption{Schéma d'une requête DNS.[1]}		 
+		
 	\end{figure}
-	Une requête consiste à envoyer sur le port 53 une requête en clair de type adresse « A » pour récupérer l’IP en passant par les diffèrent serveur 
+	\lfoot{[1] https://www.seomining.com/website-deployment/module3/registering-domain-names.php}
+	
+	Une demande DNS consiste à envoyer sur le port 53 du serveur une requête en clair pour récupérer l'information sur le nom de domaine voulu en passant par les diffèrents serveur .
 	
 	Limite :
-	DNS utilise en général UDP et le port 53. La taille maximale des paquets utilisée est de 512 octets. Si une réponse dépasse cette taille, la norme prévoit que la requête doit être renvoyée sur le port TCP 53. Ce cas est cependant rare et évité, et les firewalls bloquent souvent le port TCP 53. Les transferts de zone s'effectuent par TCP sur le même numéro de port. Pour des raisons de sécurité, les serveurs restreignent généralement la possibilité de transférer des zones.
+	DNS utilise en général UDP et le port 53. La taille maximale des paquets utilisée est de 512 octets. Si une réponse dépasse cette taille, la norme prévoit que la requête doit être renvoyée sur le port TCP 53. Ce cas est cependant rare et évité, et les firewalls bloquent souvent le port TCP 53.
 	
-	Plusieurs faille de DNS sont connu dû au fait que les requête soit envoyer en clair : 
-	Une des failles mises en avant est la possibilité d'intercepter les paquets transmis. Les serveurs DNS communiquent au moyen de paquets uniques et non signés. Ces deux spécificités rendent l'interception très aisée. L'interception peut se concrétiser de différentes manières, notamment via une attaque de type « man in the middle », de l'écoute des données transférées et de l'envoi de réponse falsifiée
-	Les paquets des serveurs DNS étant faiblement sécurisés, authentifiés par un numéro de requête, il est possible de fabriquer de faux paquets. Par exemple, un utilisateur qui souhaite accéder au site http://mabanque.example.com fait une demande au site DNS. Il suffit, à ce moment, qu'un pirate informatique réponde à la requête de l'utilisateur avant le serveur DNS pour que l'utilisateur se retrouve sur un site d'hameçonnage.
-	La trahison par un serveur, ou corruption de données, est, techniquement, identique à une interception des paquets. La seule différence venant du fait que l'utilisateur envoie volontairement sa requête au serveur. Cette situation peut arriver lorsque, par exemple, l'opérateur du serveur DNS souhaite mettre en avant un partenaire commercial.
+	Plusieurs failles de DNS sont connus dû au fait que les requêtes soit envoyer en clair : 
+	Une des failles mises en avant est la possibilité d'intercepter les paquets transmis. 
+	Les serveurs DNS communiquent au moyen de paquets uniques et non signés. 
+	Ces deux spécificités rendent l'interception très aisée. 
+	L'interception peut se concrétiser de différentes manières, notamment via une attaque de type « man in the middle », de l'écoute des données transférées et de l'envoi de réponse falsifiée.
+	Les paquets des serveurs DNS étant faiblement sécurisés, authentifiés par un numéro de requête, il est possible de fabriquer de faux paquets.
+	Par exemple, un utilisateur qui souhaite accéder au site http://mabanque.example.com fait une demande au site DNS.
+	Il suffit, à ce moment, qu'un attaquant réponde à la requête de l'utilisateur avant le serveur DNS pour que l'utilisateur se retrouve sur un site d'hameçonnage.
+	La trahison par un serveur, ou corruption de données, est, techniquement, identique à une interception des paquets.
+	La seule différence venant du fait que l'utilisateur envoie volontairement sa requête au serveur. 
+	
+	Cette situation peut arriver lorsque, par exemple, l'opérateur du serveur DNS souhaite mettre en avant un partenaire commercial.
 	L'empoisonnement du cache DNS ou pollution de cache DNS (en anglais, DNS cache poisoning) est une technique permettant de leurrer les serveurs DNS afin de leur faire croire qu'ils reçoivent une requête valide tandis qu'elle est frauduleuse.
 	Une attaque par déni de service (ou attaque par saturation; en anglais, Denial of Service attack ou DoS attack) est une attaque sur un serveur informatique qui résulte en l'incapacité pour le serveur de répondre aux requêtes de ses clients.
+	DoH permet de se prémunir de toute attaque impliquant un tiers, de l’homme du milieu aux middleboxes car il utilise le port 443 (HTTPS) utilisé pour les connexions sécurisée et qui permet l'assurance de l'origine de la réponse et de sa non-altération.
 	
 	\subsection{Le fonctionnement du DoH}
+	Cette solution est récente, ayant fait l’objet d’une standardisation par l’IETF (Internet Engineering Task Force) en octobre 2018 (RFC 8484).  Le mécanisme décrit comment les requêtes et réponses sont chiffrées, encapsulées dans un flux HTTPS.
+	Un serveur prenant en charge ce protocole est appelé «serveur DoH» pour
+	le différencier d'un "serveur DNS" ecoutant sur le port 443 (HTTPS). 
+	De même, un client qui prend en charge ce protocole est appelé un "client DoH".
+	Le client DoH est configuré avec un modèle URI [ RFC6570 ], qui
+	décrit comment construire l'URL à utiliser pour la résolution.
+	Un client DoH utilise la configuration pour sélectionner un URI, et donc le serveur DoH, qui doit être utilisé pour la résolution. La [ RFC2818 ] définit comment	HTTPS vérifie l'identité du serveur DoH.
+	Un client DoH en-capsule une seule requête DNS dans une requête HTTP à l'aide de 
+	la méthode HTTP GET ou POST.
+	\begin{figure}[H]
+		\begin{center}
+			{\includegraphics[scale=0.5]{Images/difference-entre-uri-et-url.png}}
+		\end{center}
+		\caption{Modèle d'un URI.[2]}		 
+		
+	\end{figure}
+	\lfoot{[2] https://waytolearnx.com/2018/09/difference-entre-uri-et-url.html}
+	DoH utilisent donc le modèle URI  "https://dnsserver.example.net/dns-query{?dns}" pour effectuer la résolution des différents nom de domaine. 
+	\begin{figure}[H]
+		\begin{center}
+			{\includegraphics[scale=0.5]{Images/requetedoh.png}}
+		\end{center}
+		\caption{Requête DOH POST et GET.[3]}		 
+		
+	\end{figure}
+	\lfoot{[3] https://tools.ietf.org/html/rfc8484}
+	Le serveur reçoit cette requête puis effectue les requête DNS nécessaire pour effectuer la résolution de nom et réponds au client la correspondance entre le nom de domaine et son adresse IP.
+	
 	
 	\section{Les différentes implémentations typiques}
 	
@@ -253,5 +294,8 @@
 	Le DoH, comme de nombreuses technologies cherchant a améliorer la sécurité, n'a pas manqué d'être le sujet de critiques diverses. En effet, certains pirates ont su tirer profit de ce protocole : en 2019, le ver Godlua, qui a servi à exécuter diverses attaques de type DDoS, a utilisé le DoH afin de masquer la destination de son serveur de contrôle.
 	Mais il a également été critiqué par le gouvernement du Royaume-Uni : le pays a mis en place divers filtres afin de bloquer des sites web proposant du contenu illégalement, ou bien l'accès au sites pornographiques (pour lesquels il faut entrer un numéro de carte bancaire afin de prouver la majorité du visiteur dans ce pays). Mozilla a été accusé de "Internet Villain" par l'ISPA (Internet Service Providers Association) pour avoir sapé les standards en matière de sécurité web du Royaume-Uni. Mozilla a été contraint de désactiver par défaut le DoH sur son navigateur pour les utilisateurs anglo-saxons.\href{https://www.theguardian.com/technology/2019/sep/24/firefox-no-uk-plans-to-make-encrypted-browser-tool-its-default}{Source}
 	\section{Les problèmes que peuvent poser le DoH}	
-	
+	DoH peut poser des problèmes de vie privé car HTTP est bavard, très bavard. Ainsi, une requête DNS contient très peu d'informations sur le client, alors que HTTP transmet plein d'informations inutiles et dangereuses comme Accept-Language: ou User-Agent:, qui peuvent servir à identifier un utilisateur. Sans compter bien sûr les cookies (RFC 6265). Il s'agit là d'un vrai problème. Des solutions ont été proposées (cf. l'\href{https://en.wikipedia.org/wiki/Internet_Draft}{Internet-Draft} \href{https://datatracker.ietf.org/doc/draft-dickinson-doh-dohpe/}{draft-dickinson-doh-dohpe}) mais n'ont guère suscité d'intérêt.
+	On peut aussi souligner le fait que le DoH n'est pas propre d'un point de vue technique car sur internet une application est censé tourner sur SCTP,TCP ou bien UDP mais pas sur du HTTPS.
+	D'autres problème se posent mais ne concerne pas que le DoH comme le fait d'empêcher (rendre plus difficile) la censure (DoT a ce même problème ) ou alors la centralisation d'internet en effectuent des requêtes sur les serveurs des GAFA
+    ( Les résolveurs DNS publics, comme Google Public DNS posent le même problème.) la solution à ce problème serais de multiplier les serveurs DoH.
 \end{document}
