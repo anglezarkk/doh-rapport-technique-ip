@@ -133,11 +133,12 @@
 	\begin{figure}[H]
 		\begin{center}
 			{\includegraphics[scale=0.5]{Images/routes-traffic.png}}
+			\hspace*{12pt}\hbox{\scriptsize \thinspace{\small\itshape Source: \url{http://seomining.com/website-deployment/module3/registering-domain-names.php}}}
 		\end{center}
-		\caption{Schéma d'une requête DNS.[1]}		 
+		\caption{Schéma d'une requête DNS}		 
 		
 	\end{figure}
-	\lfoot{[1] https://www.seomining.com/website-deployment/module3/registering-domain-names.php}
+
 	
 	Une demande DNS consiste à envoyer sur le port 53 du serveur une requête en clair pour récupérer l'information sur le nom de domaine voulu en passant par les diffèrents serveur .
 	
@@ -152,6 +153,16 @@
 	Les paquets des serveurs DNS étant faiblement sécurisés, authentifiés par un numéro de requête, il est possible de fabriquer de faux paquets.
 	Par exemple, un utilisateur qui souhaite accéder au site http://mabanque.example.com fait une demande au site DNS.
 	Il suffit, à ce moment, qu'un attaquant réponde à la requête de l'utilisateur avant le serveur DNS pour que l'utilisateur se retrouve sur un site d'hameçonnage.
+	
+	\begin{figure}[H]
+		\begin{center}
+			{\includegraphics[scale=0.5]{Images/dns_spoofing.png}}
+			\hspace*{12pt}\hbox{\scriptsize \thinspace{\small\itshape Source: \url{https://netosec.com/protect-network-from-dns-spoofing}}}
+		\end{center}
+		\caption{Schéma d'une attaque man-in-the-middle sur DNS.}		 
+		
+	\end{figure}
+	
 	La trahison par un serveur, ou corruption de données, est, techniquement, identique à une interception des paquets.
 	La seule différence venant du fait que l'utilisateur envoie volontairement sa requête au serveur. 
 	
@@ -173,20 +184,21 @@
 	\begin{figure}[H]
 		\begin{center}
 			{\includegraphics[scale=0.5]{Images/difference-entre-uri-et-url.png}}
+			\hspace*{12pt}\hbox{\scriptsize \thinspace{\small\itshape Source: \url{https://waytolearnx.com/2018/09/difference-entre-uri-et-url.html}}}
 		\end{center}
-		\caption{Modèle d'un URI.[2]}		 
+		\caption{Modèle d'un URI}		 
 		
 	\end{figure}
-	\lfoot{[2] https://waytolearnx.com/2018/09/difference-entre-uri-et-url.html}
 	DoH utilisent donc le modèle URI  "https://dnsserver.example.net/dns-query{?dns}" pour effectuer la résolution des différents nom de domaine. 
 	\begin{figure}[H]
 		\begin{center}
 			{\includegraphics[scale=0.5]{Images/requetedoh.png}}
+						\hspace*{12pt}\hbox{\scriptsize \thinspace{\small\itshape Source: \url{https://tools.ietf.org/html/rfc8484}}}
 		\end{center}
-		\caption{Requête DOH POST et GET.[3]}		 
+		\caption{Requête DOH POST et GET}		 
 		
 	\end{figure}
-	\lfoot{[3] https://tools.ietf.org/html/rfc8484}
+
 	Le serveur reçoit cette requête puis effectue les requête DNS nécessaire pour effectuer la résolution de nom et réponds au client la correspondance entre le nom de domaine et son adresse IP.
 	
 	
@@ -211,8 +223,6 @@
 	L'application effectue donc une requête GET vers \url{https://8.8.8.8/resolve?name=twitter.com&type=A}.
 	
 	La syntaxe est identique à celle d'une API.
-	
-	\newpage
 	
 	L'échange se déroule ainsi :
 	\begin{figure}[H]
@@ -239,7 +249,7 @@
 	 	\caption{Capture Wireshark de l'échange DoH.}
 	\end{figure}
 
-	D'un point de vue externe, impossible de voir qu'il s'agit de trafic DNS, tout ce que l'on voit, c'est un handshake TLS entre le serveur et le client, puis des données chiffrées. Étant donné que n'importe quel type de données peuvent se trouver dans un échange chiffré, cela peut poser problème dans un environnement d'entreprise par exemple : l'adresse du serveur DoH cible dépend entièrement de l'application et de ses éventuels paramètres (le paramètre global du système d'exploitation n'est pas pris en compte, l'administrateur système perd donc la main sur ce paramètre). 
+	\label{sec:res_etr}D'un point de vue externe, impossible de voir qu'il s'agit de trafic DNS, tout ce que l'on voit, c'est un handshake TLS entre le serveur et le client, puis des données chiffrées. Étant donné que n'importe quel type de données peuvent se trouver dans un échange chiffré, cela peut poser problème dans un environnement d'entreprise par exemple : l'adresse du serveur DoH cible dépend entièrement de l'application et de ses éventuels paramètres (le paramètre global du système d'exploitation n'est pas pris en compte, l'administrateur système perd donc la main sur ce paramètre). 
 	
 	Le filtrage et certains contrôles s'effectuent sur la base du DNS (exemple : filtrage des adresses non pertinentes pour le travail, ou bien encore filtrage sur une liste contenant des adresses dangereuses, pouvant potentiellement infecter les postes de l'entreprises). 
 	
@@ -290,12 +300,22 @@
 	\subsubsection{Serveurs compatibles}
 	BIND 9, un serveur DNS open-source et très répandu, a introduit le support du DoH en février 2021, sur la version 9.17.10.
 	Quant à Unbound, il le supporte depuis octobre 2020 (version 1.12.0). Il supportait déjà le DoT (DNS over TLS) depuis décembre 2011.
-	\subsection{Critiques}
-	Le DoH, comme de nombreuses technologies cherchant a améliorer la sécurité, n'a pas manqué d'être le sujet de critiques diverses. En effet, certains pirates ont su tirer profit de ce protocole : en 2019, le ver Godlua, qui a servi à exécuter diverses attaques de type DDoS, a utilisé le DoH afin de masquer la destination de son serveur de contrôle.
-	Mais il a également été critiqué par le gouvernement du Royaume-Uni : le pays a mis en place divers filtres afin de bloquer des sites web proposant du contenu illégalement, ou bien l'accès au sites pornographiques (pour lesquels il faut entrer un numéro de carte bancaire afin de prouver la majorité du visiteur dans ce pays). Mozilla a été accusé de "Internet Villain" par l'ISPA (Internet Service Providers Association) pour avoir sapé les standards en matière de sécurité web du Royaume-Uni. Mozilla a été contraint de désactiver par défaut le DoH sur son navigateur pour les utilisateurs anglo-saxons.\href{https://www.theguardian.com/technology/2019/sep/24/firefox-no-uk-plans-to-make-encrypted-browser-tool-its-default}{Source}
-	\section{Les problèmes que peuvent poser le DoH}	
-	DoH peut poser des problèmes de vie privé car HTTP est bavard, très bavard. Ainsi, une requête DNS contient très peu d'informations sur le client, alors que HTTP transmet plein d'informations inutiles et dangereuses comme Accept-Language: ou User-Agent:, qui peuvent servir à identifier un utilisateur. Sans compter bien sûr les cookies (RFC 6265). Il s'agit là d'un vrai problème. Des solutions ont été proposées (cf. l'\href{https://en.wikipedia.org/wiki/Internet_Draft}{Internet-Draft} \href{https://datatracker.ietf.org/doc/draft-dickinson-doh-dohpe/}{draft-dickinson-doh-dohpe}) mais n'ont guère suscité d'intérêt.
-	On peut aussi souligner le fait que le DoH n'est pas propre d'un point de vue technique car sur internet une application est censé tourner sur SCTP,TCP ou bien UDP mais pas sur du HTTPS.
-	D'autres problème se posent mais ne concerne pas que le DoH comme le fait d'empêcher (rendre plus difficile) la censure (DoT a ce même problème ) ou alors la centralisation d'internet en effectuent des requêtes sur les serveurs des GAFA
-    ( Les résolveurs DNS publics, comme Google Public DNS posent le même problème.) la solution à ce problème serais de multiplier les serveurs DoH.
+	\subsection{Critiques et problèmes de DNS over HTTPS}
+	Une des critiques majeure de DNS over HTTPS est que cette technologie ne résout aucun problème.
+	En effet, le chiffrement, vendu comme moyen de contourner la censure et d'échapper au tracking, est rendu complètement caduque par la centralisation des serveurs DoH autour d'un nombre très réduit d'acteurs : les GAFAM. Concernant le tracking : les requêtes DNS sont envoyées directement au GAFAM, mais aussi avec de nombreuses autres informations embarquées dans les entêtes HTTP (User-Agent, Accept-Language....). Cette centralisation va dans le sens inverse de l'essence de DNS : la décentralisation. Pour ce qui est de la censure, les gouvernements autoritaires peuvent simplement ordonner aux entreprises responsables des serveurs DoH (les GAFAM) de bloquer la résolution de certains domaines si la requête provient de leur pays. Il ne faut pas sous-estimer les gouvernements à ce niveau, il suffit de penser a ce que fait la Chine... 
+	De plus, l'opacité du protocole par rapport à DNS et DoT pose problème notamment sur les réseaux d'entreprises, voir \hyperref[sec:res_etr]{DoH natif au sein du navigateur}.
+
+	
+	Le DoH, comme de nombreuses technologies cherchant a améliorer la sécurité, n'a pas manqué d'être le sujet de critiques diverses. En effet, certains pirates ont su tirer profit de ce protocole : en 2019, le ver Godlua, qui a servi à exécuter diverses attaques de type DDoS, a utilisé le DoH afin de masquer la destination de son serveur de contrôle. Le ver utilise DoH pour récupérer le champ TXT provenant d'un nom de domaine, ou l'URL du serveur de commande est stockée.
+	
+	\begin{figure}[H]
+		\begin{center}
+			{\includegraphics[scale=0.6]{Images/godlua_request.png}}
+			\hspace*{12pt}\hbox{\scriptsize \thinspace{\small\itshape Source: \url{trendmicro.com}}}
+		\end{center}
+		\caption{Requête vers le champ TXT contenant l'URL du serveur de contrôle Godlua}
+	\end{figure}
+	
+	Mais il a également été critiqué par le gouvernement du Royaume-Uni : le pays a mis en place divers filtres afin de bloquer des sites web proposant du contenu illégalement, ou bien l'accès au sites pornographiques (pour lesquels il faut entrer un numéro de carte bancaire afin de prouver la majorité du visiteur dans ce pays). Mozilla a été accusé de "Internet Villain" par l'ISPA (Internet Service Providers Association) pour avoir sapé les standards en matière de sécurité web du Royaume-Uni. Mozilla a été contraint de désactiver par défaut le DoH sur son navigateur pour les utilisateurs. anglo-saxons.\href{https://www.theguardian.com/technology/2019/sep/24/firefox-no-uk-plans-to-make-encrypted-browser-tool-its-default}{Source}
+	
 \end{document}
